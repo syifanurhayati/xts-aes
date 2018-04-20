@@ -1,153 +1,98 @@
 package com.jgc.rca.main;
 
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Text;
+import java.io.File;
 
 public class EncryptMode {
-  Display display = new Display();
-  Shell shlEncryptMode = new Shell(display);
-  Button buttonSelectFileKey;
-  Button buttonSelectFile;
+  JFrame frame = new JFrame();
+  JButton buttonSelectFileKey;
+  JButton buttonSelectFile;
   
   String selectedDir;
   String fileFilterPath = "F:/jdk1.5";
-  private Label lblFile;
-  private Label lblKey;
-  private Text text;
-  private Text text_1;
-  private Button btnEncyptNow;
+  private JLabel lblFile;
+  private JLabel lblKey;
+  private JTextField text;
+  private JTextField text_1;
+  private JButton btnEncyptNow;
 
   public EncryptMode() {
-    shlEncryptMode.setTouchEnabled(true);
-    shlEncryptMode.setText("Encrypt Mode");
-    shlEncryptMode.setMinimumSize(new Point(240, 240));
-    shlEncryptMode.setLayout(new GridLayout(3, false));
-    new Label(shlEncryptMode, SWT.NONE);
-    new Label(shlEncryptMode, SWT.NONE);
-
-    shlEncryptMode.pack();
-    new Label(shlEncryptMode, SWT.NONE);
-    new Label(shlEncryptMode, SWT.NONE);
-    new Label(shlEncryptMode, SWT.NONE);
-    new Label(shlEncryptMode, SWT.NONE);
+    this.frame.setAlwaysOnTop(true);
+	this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.getContentPane().setLayout(new GridLayout(0, 3, 0, 0));
     
-    lblFile = new Label(shlEncryptMode, SWT.NONE);
-    lblFile.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-    lblFile.setText("File");
+    lblFile = new JLabel();
+    lblFile.setText("File :");
+    this.frame.getContentPane().add(lblFile);
     
-    text = new Text(shlEncryptMode, SWT.BORDER);
-    text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    text = new JTextField();
+    this.frame.getContentPane().add(text);
     
-    buttonSelectFile = new Button(shlEncryptMode, SWT.PUSH);
-    buttonSelectFile.addSelectionListener(new SelectionAdapter() {
-    	@Override
-    	public void widgetSelected(SelectionEvent e) {
-    	}
-    });
+    buttonSelectFile = new JButton();
     buttonSelectFile.setText("Browse File");
-    buttonSelectFile.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event event) {
-        FileDialog fileDialog = new FileDialog(shlEncryptMode, SWT.MULTI);
-
-        fileDialog.setFilterPath(fileFilterPath);
-        
-        fileDialog.setFilterExtensions(new String[]{"*.rtf", "*.html", "*.*"});
-        fileDialog.setFilterNames(new String[]{ "Rich Text Format", "HTML Document", "Any"});
-        
-        String firstFile = fileDialog.open();
-
-        if(firstFile != null) {
-          fileFilterPath = fileDialog.getFilterPath();
-          String[] selectedFiles = fileDialog.getFileNames();
-          StringBuffer sb = new StringBuffer("Selected files under dir " + fileDialog.getFilterPath() +  ": \n");
-          for(int i=0; i<selectedFiles.length; i++) {
-            sb.append(selectedFiles[i] + "\n");
-          }
-          lblFile.setText(sb.toString());
+    this.frame.getContentPane().add(buttonSelectFile);
+    buttonSelectFile.addActionListener(new ActionListener( ) {
+        public void actionPerformed(ActionEvent event) {
+        	JFileChooser openFile = new JFileChooser();
+            openFile.showOpenDialog(null);
+            File chosen = openFile.getSelectedFile();
+            text.setText(chosen.getAbsolutePath());
         }
-      }
     });
     
-    lblKey = new Label(shlEncryptMode, SWT.NONE);
-    lblKey.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-    lblKey.setText("Key");
+    lblKey = new JLabel();
+    lblKey.setText("Key :");
+    this.frame.getContentPane().add(lblKey);
     
-    text_1 = new Text(shlEncryptMode, SWT.BORDER);
-    text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    text_1 = new JTextField();
+    this.frame.getContentPane().add(text_1);
     
-    buttonSelectFileKey = new Button(shlEncryptMode, SWT.PUSH);
-    buttonSelectFileKey.addSelectionListener(new SelectionAdapter() {
-    	@Override
-    	public void widgetSelected(SelectionEvent e) {
-    	}
-    });
+    buttonSelectFileKey = new JButton();
     buttonSelectFileKey.setText("Browse File");
-    buttonSelectFileKey.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event event) {
-        FileDialog fileDialog = new FileDialog(shlEncryptMode, SWT.MULTI);
-
-        fileDialog.setFilterPath(fileFilterPath);
-        
-        fileDialog.setFilterExtensions(new String[]{"*.rtf", "*.html", "*.*"});
-        fileDialog.setFilterNames(new String[]{ "Rich Text Format", "HTML Document", "Any"});
-        
-        String firstFile = fileDialog.open();
-
-        if(firstFile != null) {
-          fileFilterPath = fileDialog.getFilterPath();
-          String[] selectedFiles = fileDialog.getFileNames();
-          StringBuffer sb = new StringBuffer("Selected files under dir " + fileDialog.getFilterPath() +  ": \n");
-          for(int i=0; i<selectedFiles.length; i++) {
-            sb.append(selectedFiles[i] + "\n");
-          }
-          lblFile.setText(sb.toString());
+    this.frame.getContentPane().add(buttonSelectFileKey);
+    buttonSelectFileKey.addActionListener(new ActionListener( ) {
+        public void actionPerformed(ActionEvent event) {
+        	JFileChooser openFile = new JFileChooser();
+            openFile.showOpenDialog(null);
+            File chosenKey = openFile.getSelectedFile();
+            text_1.setText(chosenKey.getAbsolutePath());
         }
-      }
     });
-    new Label(shlEncryptMode, SWT.NONE);
-    new Label(shlEncryptMode, SWT.NONE);
-    new Label(shlEncryptMode, SWT.NONE);
-    new Label(shlEncryptMode, SWT.NONE);
-    new Label(shlEncryptMode, SWT.NONE);
     
-    Listener listener = new Listener() {
-    	public void handleEvent(Event arg0) {
-			shlEncryptMode.setVisible(false);
-			new ResultEncryptMode();
-		}
-      };
+    JLabel label_1 = new JLabel("");
+    frame.getContentPane().add(label_1);
     
-    btnEncyptNow = new Button(shlEncryptMode, SWT.NONE);
+    JLabel label_2 = new JLabel("");
+    frame.getContentPane().add(label_2);
+    
+    JLabel label = new JLabel();
+    this.frame.getContentPane().add(label);
+    
+    JLabel label_3 = new JLabel();
+    this.frame.getContentPane().add(label_3);
+    
+    JLabel label_4 = new JLabel();
+    this.frame.getContentPane().add(label_4);
+    
+    btnEncyptNow = new JButton();
     btnEncyptNow.setText("Encrypt Now!");
-    btnEncyptNow.addListener(SWT.Selection, listener);
-    shlEncryptMode.open();
-
-    // Set up the event loop.
-    while (!shlEncryptMode.isDisposed()) {
-      if (!display.readAndDispatch()) {
-        // If no more entries in event queue
-        display.sleep();
-      }
-    }
-
-    display.dispose();
+    this.frame.getContentPane().add(btnEncyptNow);
+    btnEncyptNow.addActionListener(new ActionListener( ) {
+        public void actionPerformed(ActionEvent event) {
+        	frame.setVisible(false);
+        	new ResultEncryptMode();
+        }
+    });
+    
+    frame.setLocationRelativeTo(null);
+	frame.pack();
+	frame.setVisible(true);
   }
 }
