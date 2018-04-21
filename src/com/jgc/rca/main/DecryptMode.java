@@ -1,156 +1,147 @@
 package com.jgc.rca.main;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import net.miginfocom.swing.MigLayout;
+import java.awt.Window.Type;
+import java.awt.SystemColor;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Dimension;
 
 public class DecryptMode {
-	Display display = new Display();
-	Shell shlDecryptMode = new Shell(display);
-	Button buttonSelectFileKey;
-	Button buttonSelectFile;
+  JFrame frame = new JFrame();
+  JButton buttonSelectFileKey;
+  JButton buttonSelectFile;
+  
+  private JLabel lblFile;
+  private JLabel lblKey;
+  private JTextField filePath;
+  private JTextField keyPath;
+  private JTextField text;
+  private JTextField text_1;
+  private JButton btnDecryptNow;
 
-	String selectedDir;
-	String fileFilterPath = "F:/jdk1.5";
-	private Label lblFile;
-	private Label lblKey;
-	private Text text;
-	private Text text_1;
-	private Button btnDecryptNow;
-	protected Control shlEncryptMode;
+  public DecryptMode() {
+    frame.getContentPane().setBackground(SystemColor.activeCaption);
+    frame.setBackground(SystemColor.activeCaption);
+    frame.setType(Type.POPUP);
+    frame.setTitle("Decrypt Mode");
+    frame.setResizable(false);
+    this.frame.setAlwaysOnTop(true);
+	this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.getContentPane().setLayout(new MigLayout("", "[68.00px][265.00px][145px]", "[50.00px][][31px][][44.00px][31px]"));
+    
+    lblFile = new JLabel();
+    lblFile.setForeground(Color.WHITE);
+    lblFile.setFont(new Font("Century Gothic", Font.BOLD, 22));
+    lblFile.setText("File :");
+    this.frame.getContentPane().add(lblFile, "cell 0 1,alignx center,growy");
+    
+    text = new JTextField();
+    this.frame.getContentPane().add(text, "cell 1 1,grow");
+    
+    buttonSelectFile = new JButton();
+    buttonSelectFile.setFont(new Font("Century Gothic", Font.PLAIN, 19));
+    buttonSelectFile.setText("Browse File");
+    this.frame.getContentPane().add(buttonSelectFile, "cell 2 1,alignx center,growy");
+    buttonSelectFile.addActionListener(new ActionListener( ) {
+        public void actionPerformed(ActionEvent event) {
+        	JFileChooser openFile = new JFileChooser();
+            openFile.showOpenDialog(null);
+            File chosen = openFile.getSelectedFile();
+            text.setText(chosen.getAbsolutePath());
+        }
+    });
+    
+    lblKey = new JLabel();
+    lblKey.setForeground(Color.WHITE);
+    lblKey.setFont(new Font("Century Gothic", Font.BOLD, 22));
+    lblKey.setText("Key :");
+    this.frame.getContentPane().add(lblKey, "cell 0 3,alignx center,growy");
+    
+    text_1 = new JTextField();
+    this.frame.getContentPane().add(text_1, "cell 1 3,grow");
+    
+    buttonSelectFileKey = new JButton();
+    buttonSelectFileKey.setFont(new Font("Century Gothic", Font.PLAIN, 19));
+    buttonSelectFileKey.setText("Browse File");
+    this.frame.getContentPane().add(buttonSelectFileKey, "cell 2 3,alignx center,aligny center");
+    buttonSelectFileKey.addActionListener(new ActionListener( ) {
+        public void actionPerformed(ActionEvent event) {
+        	JFileChooser openFile = new JFileChooser();
+            openFile.showOpenDialog(null);
+            File chosenKey = openFile.getSelectedFile();
+            text_1.setText(chosenKey.getAbsolutePath());
+        }
+    });
+    
+    btnDecryptNow = new JButton();
+    btnDecryptNow.setFont(new Font("Century Gothic", Font.PLAIN, 19));
+    btnDecryptNow.setText("Decrypt Now!");
+    this.frame.getContentPane().add(btnDecryptNow, "cell 2 5,grow");
+    btnDecryptNow.addActionListener(new ActionListener( ) {
+    	public void actionPerformed(ActionEvent event) {
+			if ((filePath.getText().equals("")) && (keyPath.getText().equals(""))) {
+				JOptionPane.showMessageDialog(frame, "File and key can not be empty");
+			} else {
+				frame.setVisible(false);
+				try {
+					FileReader fr = new FileReader(keyPath.getText());
+					BufferedReader reader = new BufferedReader(fr);
+					String key = reader.readLine();
 
-	public DecryptMode() {
-		shlDecryptMode.setTouchEnabled(true);
-		shlDecryptMode.setText("Decrypt Mode");
-		shlDecryptMode.setMinimumSize(new Point(240, 240));
-		shlDecryptMode.setLayout(new GridLayout(3, false));
-		new Label(shlDecryptMode, SWT.NONE);
-		new Label(shlDecryptMode, SWT.NONE);
+					// cek length dari key
+					if (key.length() == 64 && key.matches("-?[0-9a-fA-F]+")) {
 
-		shlDecryptMode.pack();
-		new Label(shlDecryptMode, SWT.NONE);
-		new Label(shlDecryptMode, SWT.NONE);
-		new Label(shlDecryptMode, SWT.NONE);
-		new Label(shlDecryptMode, SWT.NONE);
+						String resultPath = "";
+						JFileChooser chooser = new JFileChooser();
+						int retrival = chooser.showSaveDialog(null);
+						if (retrival == JFileChooser.APPROVE_OPTION) {
+							resultPath = chooser.getSelectedFile().getAbsolutePath();
+						}
 
-		lblFile = new Label(shlDecryptMode, SWT.NONE);
-		lblFile.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblFile.setText("File");
+						// call function encrypt
+						System.out.println(resultPath);
+						// encrypt(resultPath)
+						String file = "ceritanya isi file";
+						key = "ceritanya isi key";
+						String result = "ceritanya isi result";
+						frame.setVisible(false);
+						new ResultDecryptMode(file, key, result);
 
-		text = new Text(shlDecryptMode, SWT.BORDER);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
-		buttonSelectFile = new Button(shlDecryptMode, SWT.PUSH);
-		buttonSelectFile.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-			}
-		});
-		buttonSelectFile.setText("Browse File");
-		buttonSelectFile.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				FileDialog fileDialog = new FileDialog(shlDecryptMode, SWT.MULTI);
-
-				fileDialog.setFilterPath(fileFilterPath);
-
-				fileDialog.setFilterExtensions(new String[] { "*.rtf", "*.html", "*.*" });
-				fileDialog.setFilterNames(new String[] { "Rich Text Format", "HTML Document", "Any" });
-
-				String firstFile = fileDialog.open();
-
-				if (firstFile != null) {
-					fileFilterPath = fileDialog.getFilterPath();
-					String[] selectedFiles = fileDialog.getFileNames();
-					StringBuffer sb = new StringBuffer(
-							"Selected files under dir " + fileDialog.getFilterPath() + ": \n");
-					for (int i = 0; i < selectedFiles.length; i++) {
-						sb.append(selectedFiles[i] + "\n");
+					} else {
+						JOptionPane.showMessageDialog(null, "Key File must be filled with 64 digits Hex",
+								"Wrong Input!", JOptionPane.INFORMATION_MESSAGE);
 					}
-					lblFile.setText(sb.toString());
+
+					reader.close();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			}
-		});
-
-		lblKey = new Label(shlDecryptMode, SWT.NONE);
-		lblKey.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblKey.setText("Key");
-
-		text_1 = new Text(shlDecryptMode, SWT.BORDER);
-		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
-		buttonSelectFileKey = new Button(shlDecryptMode, SWT.PUSH);
-		buttonSelectFileKey.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-			}
-		});
-		buttonSelectFileKey.setText("Browse File");
-		buttonSelectFileKey.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				FileDialog fileDialog = new FileDialog(shlDecryptMode, SWT.MULTI);
-
-				fileDialog.setFilterPath(fileFilterPath);
-
-				fileDialog.setFilterExtensions(new String[] { "*.rtf", "*.html", "*.*" });
-				fileDialog.setFilterNames(new String[] { "Rich Text Format", "HTML Document", "Any" });
-
-				String firstFile = fileDialog.open();
-
-				if (firstFile != null) {
-					fileFilterPath = fileDialog.getFilterPath();
-					String[] selectedFiles = fileDialog.getFileNames();
-					StringBuffer sb = new StringBuffer(
-							"Selected files under dir " + fileDialog.getFilterPath() + ": \n");
-					for (int i = 0; i < selectedFiles.length; i++) {
-						sb.append(selectedFiles[i] + "\n");
-					}
-					lblFile.setText(sb.toString());
-				}
-			}
-		});
-		new Label(shlDecryptMode, SWT.NONE);
-		new Label(shlDecryptMode, SWT.NONE);
-		new Label(shlDecryptMode, SWT.NONE);
-		new Label(shlDecryptMode, SWT.NONE);
-		new Label(shlDecryptMode, SWT.NONE);
-
-		btnDecryptNow = new Button(shlDecryptMode, SWT.NONE);
-		btnDecryptNow.setText("Encrypt Now!");
-		btnDecryptNow.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event arg0) {
-				shlDecryptMode.setVisible(false);
-				new ResultEncryptMode();
-			}
-		});
-
-		btnDecryptNow.setText("Decrypt Now!");
-		shlDecryptMode.open();
-		// textUser.forceFocus();
-
-		// Set up the event loop.
-		while (!shlDecryptMode.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				// If no more entries in event queue
-				display.sleep();
 			}
 		}
-
-		display.dispose();
-	}
+    });
+    
+    frame.setPreferredSize(new Dimension(500, 340));
+    frame.setLocationRelativeTo(null);
+	frame.pack();
+	frame.setVisible(true);
+  }
 }
