@@ -30,8 +30,6 @@ public class DecryptMode {
   private JLabel lblKey;
   private JTextField filePath;
   private JTextField keyPath;
-  private JTextField text;
-  private JTextField text_1;
   private JButton btnDecryptNow;
 
   public DecryptMode() {
@@ -50,8 +48,8 @@ public class DecryptMode {
     lblFile.setText("File :");
     this.frame.getContentPane().add(lblFile, "cell 0 1,alignx center,growy");
     
-    text = new JTextField();
-    this.frame.getContentPane().add(text, "cell 1 1,grow");
+    filePath = new JTextField();
+    this.frame.getContentPane().add(filePath, "cell 1 1,grow");
     
     buttonSelectFile = new JButton();
     buttonSelectFile.setFont(new Font("Century Gothic", Font.PLAIN, 19));
@@ -62,7 +60,7 @@ public class DecryptMode {
         	JFileChooser openFile = new JFileChooser();
             openFile.showOpenDialog(null);
             File chosen = openFile.getSelectedFile();
-            text.setText(chosen.getAbsolutePath());
+            filePath.setText(chosen.getAbsolutePath());
         }
     });
     
@@ -72,8 +70,8 @@ public class DecryptMode {
     lblKey.setText("Key :");
     this.frame.getContentPane().add(lblKey, "cell 0 3,alignx center,growy");
     
-    text_1 = new JTextField();
-    this.frame.getContentPane().add(text_1, "cell 1 3,grow");
+    keyPath = new JTextField();
+    this.frame.getContentPane().add(keyPath, "cell 1 3,grow");
     
     buttonSelectFileKey = new JButton();
     buttonSelectFileKey.setFont(new Font("Century Gothic", Font.PLAIN, 19));
@@ -84,7 +82,7 @@ public class DecryptMode {
         	JFileChooser openFile = new JFileChooser();
             openFile.showOpenDialog(null);
             File chosenKey = openFile.getSelectedFile();
-            text_1.setText(chosenKey.getAbsolutePath());
+            keyPath.setText(chosenKey.getAbsolutePath());
         }
     });
     
@@ -94,7 +92,7 @@ public class DecryptMode {
     this.frame.getContentPane().add(btnDecryptNow, "cell 2 5,grow");
     btnDecryptNow.addActionListener(new ActionListener( ) {
     	public void actionPerformed(ActionEvent event) {
-			if ((filePath.getText().equals("")) && (keyPath.getText().equals(""))) {
+			if ((filePath.getText().equals("")) || (keyPath.getText().equals(""))) {
 				JOptionPane.showMessageDialog(frame, "File and key can not be empty");
 			} else {
 				frame.setVisible(false);
@@ -113,14 +111,13 @@ public class DecryptMode {
 							resultPath = chooser.getSelectedFile().getAbsolutePath();
 						}
 
-						// call function encrypt
-						System.out.println(resultPath);
-						// encrypt(resultPath)
-						String file = "ceritanya isi file";
-						key = "ceritanya isi key";
-						String result = "ceritanya isi result";
+						// call function decrypt
+						XTS solver = new XTS(filePath.getText(), keyPath.getText(), resultPath);
+						solver.encrypt();
+						String result = solver.getResultContent();
+								
 						frame.setVisible(false);
-						new ResultDecryptMode(file, key, result);
+						new ResultDecryptMode(filePath.getText(), keyPath.getText(), resultPath, result);
 
 					} else {
 						JOptionPane.showMessageDialog(null, "Key File must be filled with 64 digits Hex",
@@ -132,6 +129,9 @@ public class DecryptMode {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

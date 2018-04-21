@@ -24,7 +24,7 @@ public class ResultDecryptMode {
   private JLabel lblFileWasSuccessful;
   private JLabel lblIWantTo;
 
-  public ResultDecryptMode(String file, String key, String result) {
+  public ResultDecryptMode(String filePath, String keyPath, String resultPath, String result) {
     frame.getContentPane().setBackground(SystemColor.activeCaption);
     frame.setTitle("Decryption Mode");
     frame.setType(Type.POPUP);
@@ -64,8 +64,16 @@ public class ResultDecryptMode {
         public void actionPerformed(ActionEvent event) {
         	frame.setVisible(false);
         	// call function encrypt
-        	String resultEnc = "ini hasil balikan encrypt";
-        	new ResultEncryptMode(file, key, resultEnc);
+        	XTS solver;
+			try {
+				solver = new XTS(filePath, keyPath, resultPath);
+				solver.encrypt();
+				String result = solver.getResultContent();
+	        	new ResultEncryptMode(filePath, keyPath, resultPath, result);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     });
     

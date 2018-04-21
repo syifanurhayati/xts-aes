@@ -26,8 +26,6 @@ public class EncryptMode {
 	JButton buttonSelectFileKey;
 	JButton buttonSelectFile;
 
-	String selectedDir;
-	String fileFilterPath = "F:/jdk1.5";
 	private JLabel lblFile;
 	private JLabel lblKey;
 	private JTextField filePath;
@@ -113,13 +111,13 @@ public class EncryptMode {
 							}
 
 							// call function encrypt
-							System.out.println(resultPath);
-							// encrypt(resultPath)
-							String file = "ceritanya isi file";
-							key = "ceritanya isi key";
-							String result = "ceritanya isi result";
+							XTS solver = new XTS(filePath.getText(), keyPath.getText(), resultPath);
+							solver.encrypt();
+							String result = solver.getResultContent();
+							// System.out.println(filePath.getText());
+
 							frame.setVisible(false);
-							new ResultEncryptMode(file, key, result);
+							new ResultEncryptMode(filePath.getText(), keyPath.getText(), resultPath, result);
 
 						} else {
 							JOptionPane.showMessageDialog(null, "Key File must be filled with 64 digits Hex",
@@ -131,6 +129,9 @@ public class EncryptMode {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
