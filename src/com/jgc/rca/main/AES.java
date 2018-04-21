@@ -1,5 +1,3 @@
-package com.jgc.rca.main;
-
 /**
  * 
  * @author Faridah,Putri, Syifa
@@ -18,6 +16,12 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class AES {
 	
+	private String key;
+	
+	public AES(byte[] key) {
+		this.key = ConverterBytesHex.bytesToHex(key);
+	}
+	
 	/**
 	 * 
 	 * @param plaintext
@@ -25,8 +29,8 @@ public class AES {
 	 * @return
 	 * @throws Exception
 	 */
-	public byte[] encrypt(byte[] plaintext, byte[] key) throws Exception {
-		SecretKey secretKey = new SecretKeySpec(key, "AES");
+	public byte[] encrypt(byte[] plaintext) throws Exception {
+		SecretKey secretKey = new SecretKeySpec(DatatypeConverter.parseHexBinary(key), "AES");
 		
 		Cipher eCipher = Cipher.getInstance("AES/ECB/NoPadding");
 		eCipher.init(Cipher.ENCRYPT_MODE, secretKey);
@@ -43,8 +47,8 @@ public class AES {
 	 * @return
 	 * @throws Exception
 	 */
-	public byte[] decrypt(byte[] ciphertext, byte[] key) throws Exception {
-		SecretKey secretKey = new SecretKeySpec(key, "AES");
+	public byte[] decrypt(byte[] ciphertext) throws Exception {
+		SecretKey secretKey = new SecretKeySpec(DatatypeConverter.parseHexBinary(key), "AES");
 		
 		Cipher dCipher = Cipher.getInstance("AES/ECB/NoPadding");
 		dCipher.init(Cipher.DECRYPT_MODE, secretKey);

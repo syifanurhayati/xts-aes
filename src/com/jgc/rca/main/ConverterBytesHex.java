@@ -1,5 +1,3 @@
-package com.jgc.rca.main;
-
 /**
  * 
  * @author user
