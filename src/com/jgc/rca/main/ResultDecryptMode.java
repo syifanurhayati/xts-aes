@@ -1,6 +1,7 @@
 package com.jgc.rca.main;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.event.ActionEvent;
@@ -64,14 +65,20 @@ public class ResultDecryptMode {
         public void actionPerformed(ActionEvent event) {
         	frame.setVisible(false);
         	// call function encrypt
-        	XTS solver;
 			try {
-				solver = new XTS(filePath, keyPath, resultPath);
-				solver.encrypt();
-				String result = solver.getResultContent();
-	        	new ResultEncryptMode(filePath, keyPath, resultPath, result);
+				String anotherResult = "";
+				JFileChooser chooser = new JFileChooser();
+				int retrival = chooser.showSaveDialog(null);
+				if (retrival == JFileChooser.APPROVE_OPTION) {
+					anotherResult = chooser.getSelectedFile().getAbsolutePath();
+				}
+				
+				XTS anotherSolver = new XTS(resultPath, keyPath, anotherResult);
+				anotherSolver.decrypt();
+
+				frame.setVisible(false);
+				new ResultEncryptMode(resultPath, keyPath, anotherResult, anotherSolver.encryptedText);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         }

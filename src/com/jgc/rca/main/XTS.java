@@ -1,3 +1,5 @@
+package com.jgc.rca.main;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.RandomAccessFile;
@@ -15,6 +17,8 @@ public class XTS {
 	private int m;
 	private String file;
 	private String output;
+	String encryptedText;
+	String decryptedText;
 	private byte[][] t_all_blocks;
 	private int bytes_last_block;
 	private boolean needStealing;
@@ -103,11 +107,13 @@ public class XTS {
 		
 		file_br.close();
 		
+		encryptedText = "";
 		RandomAccessFile out_br = new RandomAccessFile(output, "rw");
 		for (int i = 0; i < ciphertext.length; i++) {
 			for (int j = 0; j < ciphertext[i].length; j++) {
 				out_br.write(ciphertext[i][j]);
 			}
+			encryptedText += new String(ciphertext[i]);
 		}
 		out_br.close();
 	}
@@ -151,11 +157,13 @@ public class XTS {
 		
 		file_br.close();
 		
+		decryptedText = "";
 		RandomAccessFile out_br = new RandomAccessFile(output, "rw");
 		for (int i = 0; i < plaintext.length; i++) {
 			for (int j = 0; j < plaintext[i].length; j++) {
 				out_br.write(plaintext[i][j]);
 			}
+			decryptedText += new String(plaintext[i]);
 		}
 		out_br.close();
 	}
@@ -234,12 +242,5 @@ public class XTS {
 			}
 		}
 		this.t_all_blocks = mul;
-	}
-	
-	public static void main(String[] args) throws Exception {
-//		XTS a = new XTS("E:\\Halo.txt", "E:\\key.txt", "E:\\hasilhalo");
-//		a.encrypt();
-		XTS a = new XTS("E:\\hasilhalo", "E:\\key.txt", "E:\\halobenar");
-		a.decrypt();
 	}
 }

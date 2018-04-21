@@ -113,11 +113,9 @@ public class EncryptMode {
 							// call function encrypt
 							XTS solver = new XTS(filePath.getText(), keyPath.getText(), resultPath);
 							solver.encrypt();
-							String result = solver.getResultContent();
-							// System.out.println(filePath.getText());
 
 							frame.setVisible(false);
-							new ResultEncryptMode(filePath.getText(), keyPath.getText(), resultPath, result);
+							new ResultEncryptMode(filePath.getText(), keyPath.getText(), resultPath, solver.encryptedText);
 
 						} else {
 							JOptionPane.showMessageDialog(null, "Key File must be filled with 64 digits Hex",
@@ -126,13 +124,10 @@ public class EncryptMode {
 
 						reader.close();
 					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
